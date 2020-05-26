@@ -3,14 +3,9 @@ package com.example.camera
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 
 class PermissionFragment : Fragment() {
@@ -24,10 +19,6 @@ class PermissionFragment : Fragment() {
         }
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -36,8 +27,13 @@ class PermissionFragment : Fragment() {
         if (requestCode == REQUEST_CODE_PERMISSIONS && allPermissionsGranted()) {
             findNavController().navigate(R.id.action_permissionFragment_to_cameraFragment)
         } else {
-            Toast.makeText(requireContext(), "Доступ к камере не предоставлен", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.camera_permission_not_granted), Toast.LENGTH_SHORT)
+                .show()
         }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
     companion object {
