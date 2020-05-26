@@ -1,18 +1,15 @@
 package com.example.camera
 
 import android.annotation.SuppressLint
-import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
 import androidx.camera.core.*
-import androidx.camera.core.impl.CaptureConfig
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
-import androidx.core.view.isInvisible
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.camera.util.SharedPrefHelper
 import com.example.camera.util.flip
@@ -29,7 +26,7 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
         startCamera()
         imageViewCapture.setOnClickListener { takePicture() }
         imageViewFlash.setOnClickListener { switchFlash() }
-        if (hasFrontCamera()){
+        if (hasFrontCamera()) {
             imageViewSwitchCamera.setOnClickListener { switchCamera() }
             lensFacing = SharedPrefHelper.getLens(requireContext())
         } else {
@@ -84,9 +81,9 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
 
                     var bitmap = image.image?.toBitmap()
                     image.close()
-                    if (bitmap != null){
+                    if (bitmap != null) {
 
-                        if (lensFacing == CameraSelector.LENS_FACING_FRONT){
+                        if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
                             bitmap = bitmap.flip()
                         }
 
@@ -132,6 +129,10 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
         }
         SharedPrefHelper.saveFlashMode(requireContext(), flashMode)
         startCamera()
+    }
+
+    fun onVolumeKeyDown() {
+        takePicture()
     }
 
     companion object {
