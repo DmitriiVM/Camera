@@ -3,6 +3,7 @@ package com.example.camera.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.media.Image
 import android.media.MediaScannerConnection
 import android.webkit.MimeTypeMap
@@ -29,4 +30,9 @@ fun File.saveBitmap(bitmap: Bitmap) {
 fun File.makeAvailableForScanning(context: Context) {
     val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
     MediaScannerConnection.scanFile(context, arrayOf(absolutePath), arrayOf(mimeType), null)
+}
+
+fun Bitmap.flip(): Bitmap {
+    val matrix = Matrix().apply { postScale(-1f, 1f, width/2f, width/2f) }
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
 }
