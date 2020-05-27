@@ -31,26 +31,22 @@ class CameraManager(
 
             val cameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder().build()
-            val cameraSelector =
-                CameraSelector.Builder()
-                    .requireLensFacing(lensFacing)
-                    .build()
+            val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
-            val tt = ImageCapture.Metadata()
-            tt.isReversedVertical = true
-
-            imageCapture = ImageCapture.Builder()
-                .setFlashMode(flashMode)
-                .build()
+            imageCapture = ImageCapture.Builder().setFlashMode(flashMode).build()
 
             try {
                 cameraProvider.unbindAll()
                 val camera =
-                    cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture)
+                    cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        cameraSelector,
+                        preview,
+                        imageCapture
+                    )
 
 
                 // -----
-
                 viewFinder.setOnTouchListener { v, event ->
 
                     val cameraControl = camera.cameraControl
@@ -60,24 +56,19 @@ class CameraManager(
                         viewFinder.height.toFloat()
                     )
                     val point = factory.createPoint(event.x, event.y)
-                    val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
+                    val action = FocusMeteringAction.Builder(point)
                         .setAutoCancelDuration(5, TimeUnit.SECONDS)
                         .build()
 
                     val future = cameraControl.startFocusAndMetering(action)
-                    future.addListener(Runnable {
-                        val result = future.get()
-                        val isDone = future.isDone
-                        Log.d("mmm", "CameraFragment :  result --  ${isDone}")
-                        val cc = future.isCancelled
-                        Log.d("mmm", "CameraFragment :  cancel --  ${cc}")
 
+                    future.addListener(Runnable {
+//                        val result = future.get().isFocusSuccessful
                     }, ContextCompat.getMainExecutor(context))
 
-                    viewFinder.performClick()
+                    v.performClick()
                     return@setOnTouchListener true
                 }
-
                 // ------
 
 
