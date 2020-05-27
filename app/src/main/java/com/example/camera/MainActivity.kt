@@ -1,10 +1,13 @@
 package com.example.camera
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.camera.fragments.CameraFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +28,12 @@ class MainActivity : AppCompatActivity() {
         } else {
             super.onKeyDown(keyCode, event)
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        Log.d("mmm", "MainActivity :  onConfigurationChanged --  ")
+
+        super.onConfigurationChanged(newConfig)
     }
 
     companion object {

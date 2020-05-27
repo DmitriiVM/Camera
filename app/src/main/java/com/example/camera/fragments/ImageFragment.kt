@@ -1,4 +1,4 @@
-package com.example.camera
+package com.example.camera.fragments
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
+import com.example.camera.R
 import com.example.camera.util.createFile
 import com.example.camera.util.makeAvailableForScanning
 import com.example.camera.util.saveBitmap
