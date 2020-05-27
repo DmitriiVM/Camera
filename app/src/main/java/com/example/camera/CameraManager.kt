@@ -10,11 +10,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.fragment.findNavController
-import com.example.camera.util.SharedPrefHelper
 import com.example.camera.util.flip
 import com.example.camera.util.toBitmap
-import kotlinx.android.synthetic.main.fragment_camera.*
 import java.util.concurrent.TimeUnit
 
 class CameraManager(
@@ -49,12 +46,7 @@ class CameraManager(
             try {
                 cameraProvider.unbindAll()
                 val camera =
-                    cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        preview,
-                        imageCapture
-                    )
+                    cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture)
 
 
                 // -----
@@ -113,13 +105,7 @@ class CameraManager(
                         if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
                             bitmap = bitmap.flip()
                         }
-
                         onCaptureSuccess(bitmap)
-//                        findNavController().navigate(
-//                            CameraFragmentDirections.actionCameraFragmentToImageFragment(
-//                                bitmap
-//                            )
-//                        )
                     }
                 }
 
@@ -136,16 +122,6 @@ class CameraManager(
         val cameraProvider = ProcessCameraProvider.getInstance(context).get()
         return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
     }
-
-//    private fun switchCamera() {
-//        lensFacing = if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
-//            CameraSelector.LENS_FACING_BACK
-//        } else {
-//            CameraSelector.LENS_FACING_FRONT
-//        }
-//        SharedPrefHelper.saveLens(context, lensFacing)
-//        startCamera()
-//    }
 
     fun setLens(lensFacing: Int) {
         this.lensFacing = lensFacing

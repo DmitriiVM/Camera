@@ -6,11 +6,14 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.Image
 import android.media.MediaScannerConnection
+import android.view.View
 import android.webkit.MimeTypeMap
 import java.io.File
 import java.io.FileOutputStream
 
 private const val BITMAP_QUALITY = 100
+private const val X_SCALE = -1f
+private const val Y_SCALE = 1f
 
 fun Image.toBitmap(): Bitmap {
     val buffer = planes[0].buffer
@@ -33,6 +36,11 @@ fun File.makeAvailableForScanning(context: Context) {
 }
 
 fun Bitmap.flip(): Bitmap {
-    val matrix = Matrix().apply { postScale(-1f, 1f, width/2f, width/2f) }
+    val matrix = Matrix().apply { postScale(X_SCALE, Y_SCALE, width / 2f, width / 2f) }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+}
+
+fun View.rotate(lastAngle: Int, currentAngle: Int) {
+    rotation = lastAngle.toFloat()
+    animate().rotation(currentAngle.toFloat()).start()
 }

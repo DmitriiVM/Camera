@@ -3,7 +3,6 @@ package com.example.camera.fragments
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.OrientationEventListener
 import android.view.View
 import androidx.camera.core.CameraSelector
@@ -15,6 +14,7 @@ import com.example.camera.CameraManager
 import com.example.camera.CustomOrientationEventListener
 import com.example.camera.R
 import com.example.camera.util.SharedPrefHelper
+import com.example.camera.util.rotate
 import kotlinx.android.synthetic.main.fragment_camera.*
 
 class CameraFragment : Fragment(R.layout.fragment_camera) {
@@ -33,8 +33,9 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
     private fun initOrientationListener() {
         orientationListener =
             CustomOrientationEventListener(requireContext()) { lastAngle, currentAngle ->
-                imageViewCapture.rotation = lastAngle.toFloat()
-                imageViewCapture.animate().rotation(currentAngle.toFloat()).start()
+                imageViewCapture.rotate(lastAngle, currentAngle)
+                imageViewFlash.rotate(lastAngle, currentAngle)
+                imageViewSwitchCamera.rotate(lastAngle, currentAngle)
             }
         orientationListener.enable()
     }

@@ -23,20 +23,28 @@ class CustomOrientationEventListener(
         if (currentMode != lastMode) {
 
             val lastAngle = when (lastMode) {
-                ORIENTATION_PORTRAIT -> if (currentMode == ORIENTATION_LANDSCAPE_REVERSE) 360 else 0
-                ORIENTATION_LANDSCAPE -> 90
-                ORIENTATION_PORTRAIT_REVERSE -> 180
-                ORIENTATION_LANDSCAPE_REVERSE -> 270
+                ORIENTATION_PORTRAIT -> if (currentMode == ORIENTATION_LANDSCAPE_REVERSE) ANGLE_360 else ANGLE_0
+                ORIENTATION_LANDSCAPE -> ANGLE_90
+                ORIENTATION_PORTRAIT_REVERSE -> ANGLE_180
+                ORIENTATION_LANDSCAPE_REVERSE -> ANGLE_270
             }
             val currentAngle = when (currentMode) {
-                ORIENTATION_PORTRAIT -> if (lastMode == ORIENTATION_LANDSCAPE) 0 else 360
-                ORIENTATION_LANDSCAPE -> 90
-                ORIENTATION_PORTRAIT_REVERSE -> 180
-                ORIENTATION_LANDSCAPE_REVERSE -> 270
+                ORIENTATION_PORTRAIT -> if (lastMode == ORIENTATION_LANDSCAPE) ANGLE_0 else ANGLE_360
+                ORIENTATION_LANDSCAPE -> ANGLE_90
+                ORIENTATION_PORTRAIT_REVERSE -> ANGLE_180
+                ORIENTATION_LANDSCAPE_REVERSE -> ANGLE_270
             }
             listener(lastAngle, currentAngle)
             lastMode = currentMode
         }
+    }
+
+    companion object {
+        private const val ANGLE_0 = 0
+        private const val ANGLE_90 = 90
+        private const val ANGLE_180 = 180
+        private const val ANGLE_270 = 270
+        private const val ANGLE_360 = 360
     }
 }
 
