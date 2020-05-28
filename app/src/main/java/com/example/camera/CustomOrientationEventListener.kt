@@ -14,12 +14,13 @@ class CustomOrientationEventListener(
 
     override fun onOrientationChanged(angle: Int) {
         if (angle < 0) return
-        currentMode = when (angle) {
-            in 46..135 -> ORIENTATION_LANDSCAPE_REVERSE
-            in 136..225 -> ORIENTATION_PORTRAIT_REVERSE
-            in 226..315 -> ORIENTATION_LANDSCAPE
-            else -> ORIENTATION_PORTRAIT
-        }
+
+        if (angle in 0..30) currentMode =  ORIENTATION_PORTRAIT
+        if (angle in 60..120) currentMode =  ORIENTATION_LANDSCAPE_REVERSE
+        if (angle in 150..210) currentMode =  ORIENTATION_PORTRAIT_REVERSE
+        if (angle in 240..300) currentMode =  ORIENTATION_LANDSCAPE
+        if (angle in 330..359) currentMode =  ORIENTATION_PORTRAIT
+
         if (currentMode != lastMode) {
 
             val lastAngle = when (lastMode) {
