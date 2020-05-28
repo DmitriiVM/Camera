@@ -3,7 +3,6 @@ package com.example.camera.fragments
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.OrientationEventListener
 import android.view.View
 import androidx.camera.core.CameraSelector
@@ -76,6 +75,7 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
         super.onDestroyView()
         requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         orientationListener.disable()
+        cameraManager.onDestroyFragmentView()
     }
 
     private fun switchCamera() {

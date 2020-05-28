@@ -27,8 +27,6 @@ class ImageFragment : Fragment(R.layout.fragment_image) {
             bitmap = it
             imageView.setImageBitmap(bitmap)
         }
-
-
         imageViewSave.setOnClickListener { showSaveImageDialog() }
         imageViewBack.setOnClickListener { requireActivity().onBackPressed() }
     }

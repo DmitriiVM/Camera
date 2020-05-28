@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.OrientationEventListener
 import android.view.Surface
 import android.widget.Toast
 import androidx.camera.core.*
@@ -26,6 +25,7 @@ class CameraManager(
     private val viewFinder: PreviewView
 ) {
 
+    private var orientationEventListener: CustomOrientationEventListener? = null
     private var imageCapture: ImageCapture? = null
     private var lensFacing = CameraSelector.LENS_FACING_BACK
     private var flashMode = ImageCapture.FLASH_MODE_OFF
@@ -45,7 +45,6 @@ class CameraManager(
                 .setTargetAspectRatio(aspectRatio())
                 .setFlashMode(flashMode)
                 .build()
-
 
             val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
@@ -91,8 +90,7 @@ class CameraManager(
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
-
-            val orientationEventListener = CustomOrientationEventListener(context){ _, angle ->
+            orientationEventListener = CustomOrientationEventListener(context){ _, angle ->
                 val rotation : Int = when (angle) {
                     0 -> Surface.ROTATION_0
                     90 -> Surface.ROTATION_90
@@ -101,7 +99,7 @@ class CameraManager(
                 }
                 imageCapture!!.targetRotation = rotation
             }
-            orientationEventListener.enable()
+            orientationEventListener?.enable()
 
         }, ContextCompat.getMainExecutor(context))
     }
@@ -117,7 +115,6 @@ class CameraManager(
         }
         return AspectRatio.RATIO_16_9
     }
-
 
     fun takePicture(onCaptureSuccess: (bitmap: Bitmap) -> Unit) {
         imageCapture?.takePicture(
@@ -146,7 +143,6 @@ class CameraManager(
             })
     }
 
-
     fun hasFrontCamera(): Boolean {
         val cameraProvider = ProcessCameraProvider.getInstance(context).get()
         return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
@@ -157,10 +153,14 @@ class CameraManager(
         startCamera()
     }
 
-    fun setFlash(flash: Int) {
-        imageCapture?.flashMode = flash
-//        this.flashMode = flashMode
-//        startCamera()
+    fun setFlash(flashMode: Int) {
+//        imageCapture?.flashMode = flashMode
+        this.flashMode = flashMode
+        startCamera()
+    }
+
+    fun onDestroyFragmentView() {
+        orientationEventListener?.disable()
     }
 
     companion object {
