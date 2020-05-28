@@ -23,7 +23,6 @@ fun showDialog(activity: Activity, listener: (fileName: String) -> Unit) {
     AlertDialog.Builder(activity)
         .setView(dialogView)
         .setTitle(activity.getString(R.string.save_dialog_title))
-        .setMessage(activity.getString(R.string.save_dialog_message))
         .setNegativeButton(activity.getString(R.string.save_dialog_negative_button), null)
         .setPositiveButton(activity.getString(R.string.save_dialog_positive_button)) { _, _ ->
             listener(dialogView.editText.text.toString())
