@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.OrientationEventListener
 import android.view.Surface
 import android.widget.Toast
 import androidx.camera.core.*
@@ -34,20 +35,17 @@ class CameraManager(
 
         cameraProviderFuture.addListener(Runnable {
 
-            val rotation = Surface.ROTATION_90
-
             val cameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder()
                 .setTargetAspectRatio(aspectRatio())
-                .setTargetRotation(rotation)
                 .build()
 
             imageCapture = ImageCapture.Builder()
                 .setTargetAspectRatio(aspectRatio())
                 .setFlashMode(flashMode)
-                .setTargetRotation(rotation)
                 .build()
+
 
             val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
@@ -92,6 +90,18 @@ class CameraManager(
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
+
+
+            val orientationEventListener = CustomOrientationEventListener(context){ _, angle ->
+                val rotation : Int = when (angle) {
+                    0 -> Surface.ROTATION_0
+                    90 -> Surface.ROTATION_90
+                    180 -> Surface.ROTATION_180
+                    else -> Surface.ROTATION_270
+                }
+                imageCapture!!.targetRotation = rotation
+            }
+            orientationEventListener.enable()
 
         }, ContextCompat.getMainExecutor(context))
     }
@@ -147,10 +157,10 @@ class CameraManager(
         startCamera()
     }
 
-    fun setFlash(flashMode: Int) {
-//        imageCapture?.flashMode = flashMode
-        this.flashMode = flashMode
-        startCamera()
+    fun setFlash(flash: Int) {
+        imageCapture?.flashMode = flash
+//        this.flashMode = flashMode
+//        startCamera()
     }
 
     companion object {
