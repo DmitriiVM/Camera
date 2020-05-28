@@ -120,6 +120,7 @@ class CameraManager(
     }
 
     fun setFlash(flashMode: Int) {
+//        imageCapture?.flashMode = flashMode
         this.flashMode = flashMode
         startCamera()
     }

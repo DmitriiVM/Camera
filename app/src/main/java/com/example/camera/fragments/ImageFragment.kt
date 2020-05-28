@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
-import androidx.navigation.fragment.navArgs
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.observe
+import com.example.camera.CameraViewModel
 import com.example.camera.R
 import com.example.camera.util.createFile
 import com.example.camera.util.makeAvailableForScanning
@@ -15,13 +17,17 @@ import kotlinx.android.synthetic.main.fragment_image.*
 
 class ImageFragment : Fragment(R.layout.fragment_image) {
 
-    private val args: ImageFragmentArgs by navArgs()
     private lateinit var bitmap: Bitmap
+
+    private val viewModel by activityViewModels<CameraViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        bitmap = args.bitmap
-        imageView.setImageBitmap(bitmap)
+        viewModel.bitmap.observe(viewLifecycleOwner){
+            bitmap = it
+            imageView.setImageBitmap(bitmap)
+        }
+
 
         imageViewSave.setOnClickListener { showSaveImageDialog() }
         imageViewBack.setOnClickListener { requireActivity().onBackPressed() }

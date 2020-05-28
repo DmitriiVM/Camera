@@ -3,14 +3,17 @@ package com.example.camera.fragments
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.OrientationEventListener
 import android.view.View
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.camera.CameraManager
+import com.example.camera.CameraViewModel
 import com.example.camera.CustomOrientationEventListener
 import com.example.camera.R
 import com.example.camera.util.SharedPrefHelper
@@ -23,6 +26,8 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
     private var lensFacing = CameraSelector.LENS_FACING_BACK
     private var flashMode = ImageCapture.FLASH_MODE_OFF
     private lateinit var orientationListener: OrientationEventListener
+
+    private val viewModel by activityViewModels<CameraViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -45,9 +50,7 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
             CameraManager(requireContext(), this, viewFinder)
         cameraManager.startCamera()
 
-        imageViewCapture.setOnClickListener {
-            cameraManager.takePicture { openImageFragment(it) }
-        }
+        imageViewCapture.setOnClickListener { takePicture() }
 
         if (cameraManager.hasFrontCamera()) {
             lensFacing = SharedPrefHelper.getLens(requireContext())
@@ -96,16 +99,15 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
     }
 
     fun onVolumeKeyDown() {
-        cameraManager.takePicture() {
-            openImageFragment(it)
-        }
+        takePicture()
+    }
+
+    private fun takePicture() {
+        cameraManager.takePicture { openImageFragment(it) }
     }
 
     private fun openImageFragment(bitmap: Bitmap) {
-        findNavController().navigate(
-            CameraFragmentDirections.actionCameraFragmentToImageFragment(
-                bitmap
-            )
-        )
+        viewModel.bitmap.value = bitmap
+        findNavController().navigate(R.id.action_cameraFragment_to_imageFragment)
     }
 }
