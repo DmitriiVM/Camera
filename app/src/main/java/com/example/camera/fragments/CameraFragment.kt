@@ -32,7 +32,9 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         initOrientationListener()
-        initCameraManager()
+        viewFinder.post {
+            initCameraManager()
+        }
     }
 
     private fun initOrientationListener() {

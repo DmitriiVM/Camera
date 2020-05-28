@@ -3,7 +3,9 @@ package com.example.camera
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Surface
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -13,6 +15,9 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.camera.util.flip
 import com.example.camera.util.toBitmap
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class CameraManager(
     private val context: Context,
@@ -29,11 +34,22 @@ class CameraManager(
 
         cameraProviderFuture.addListener(Runnable {
 
-            val cameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder().build()
-            val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+            val rotation = Surface.ROTATION_90
 
-            imageCapture = ImageCapture.Builder().setFlashMode(flashMode).build()
+            val cameraProvider = cameraProviderFuture.get()
+
+            val preview = Preview.Builder()
+                .setTargetAspectRatio(aspectRatio())
+                .setTargetRotation(rotation)
+                .build()
+
+            imageCapture = ImageCapture.Builder()
+                .setTargetAspectRatio(aspectRatio())
+                .setFlashMode(flashMode)
+                .setTargetRotation(rotation)
+                .build()
+
+            val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
             try {
                 cameraProvider.unbindAll()
@@ -78,6 +94,18 @@ class CameraManager(
             }
 
         }, ContextCompat.getMainExecutor(context))
+    }
+
+    private fun aspectRatio(): Int {
+        val metrics = DisplayMetrics().also { viewFinder.display.getRealMetrics(it) }
+        val width = metrics.widthPixels
+        val height = metrics.heightPixels
+
+        val previewRatio = max(width, height).toDouble() / min(width, height)
+        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
+            return AspectRatio.RATIO_4_3
+        }
+        return AspectRatio.RATIO_16_9
     }
 
 
@@ -127,5 +155,7 @@ class CameraManager(
 
     companion object {
         private const val TAG = "CameraApp"
+        private const val RATIO_4_3_VALUE = 4.0 / 3.0
+        private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 }
